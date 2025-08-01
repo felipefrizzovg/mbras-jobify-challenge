@@ -5,7 +5,7 @@ import { Job } from "@/types/job";
 
 export default function JobCard({ job }: { job: Job }) {
   return (
-    <Link href={job.url} passHref className="focus:outline-none group">
+    <Link href={`/jobs/${job.id}`} passHref className="focus:outline-none group">
         <Card className="transition-shadow hover:shadow-xl focus:ring-2 ring-primary cursor-pointer min-h-[180px]">
           <CardHeader className="flex flex-row items-center gap-4 pb-1">
             <Image
