@@ -15,9 +15,9 @@ type Props = {
 export default function ClientJobsGrid({ jobs, categories, initialCategory = "" }: Props) {
   const [category, setCategory] = useState(initialCategory);
 
-  const filteredJobs = category
-    ? jobs.filter((job) => job.category.toLocaleLowerCase() === category.toLocaleLowerCase())
-    : jobs;
+  const filteredJobs = !category
+  ? jobs
+  : jobs.filter((job) => job.category.trim().toLowerCase() === category.trim().toLowerCase());
 
   return (
     <>

@@ -1,3 +1,4 @@
+import ClientFavoriteJobs from "@/components/ClientFavoriteJobs";
 import ClientJobsGrid from "@/components/ClientJobsGrid";
 import Header from "@/components/Header";
 import { Category } from "@/types/category";
@@ -30,13 +31,14 @@ async function getCategories(): Promise<Category[]> {
 export default async function Home({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
   const params = await searchParams;
   const category = params.category || "";
-  
+
   const [jobs, categories] = await Promise.all([getJobs(category), getCategories()]);
 
   return (
     <>
       <Header />
       <main className="px-4">
+        <ClientFavoriteJobs />
         <ClientJobsGrid jobs={jobs} categories={categories} initialCategory={category} />
       </main>
     </>

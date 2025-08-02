@@ -37,7 +37,7 @@ export default function Filter({ value, onChange, options }: FilterProps) {
             {options.map((category) => (
               <CommandItem
                 key={category.slug}
-                value={category.slug}
+                value={category.name}
                 onSelect={(currentValue) => {
                   onChange(currentValue === value ? "" : currentValue);
                   setOpen(false);
@@ -45,7 +45,7 @@ export default function Filter({ value, onChange, options }: FilterProps) {
               >
                 <LuCheck
                   className={`mr-2 h-4 w-4 ${
-                    value === category.slug ? "opacity-100" : "opacity-0"
+                    value === category.name ? "opacity-100" : "opacity-0"
                   }`}
                 />
                 {category.name}
@@ -68,7 +68,7 @@ export default function Filter({ value, onChange, options }: FilterProps) {
             className="w-[200px] justify-between"
           >
             {value
-              ? options.find((category) => category.slug === value)?.name
+              ? options.find((category) => category.name === value)?.name
               : "Filtre por tipo..."}
             <LuChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
@@ -90,7 +90,7 @@ export default function Filter({ value, onChange, options }: FilterProps) {
           className="w-[200px] justify-between"
         >
           {value
-            ? options.find((category) => category.slug === value)?.name
+            ? options.find((category) => category.name === value)?.name
             : "Filtre por tipo..."}
           <LuChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
