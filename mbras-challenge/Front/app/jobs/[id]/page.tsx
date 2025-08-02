@@ -4,7 +4,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 
 async function getJob(id: string): Promise<Job | null> {
-  const url = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/jobs/${id}`;
+  const url = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"}/api/jobs/${id}`;
 
   const response = await fetch(url, { cache: "no-store" })
   if (!response.ok) return null;
@@ -56,6 +56,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
           href={job.url}
           target="_blank"
           rel="noopener noreferrer"
+          aria-label={`Abrir vaga ${job.title} no site oficial da Remotive`}
           className="text-primary font-semibold underline"
         >
           Ver vaga original

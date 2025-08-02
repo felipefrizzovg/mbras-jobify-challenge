@@ -10,33 +10,21 @@ type Props = {
   jobs: Job[];
   categories: Category[];
   initialCategory?: string;
-};
+}
 
-export default function ClientJobsGrid({
-  jobs,
-  categories,
-  initialCategory = "",
-}: Props) {
+export default function ClientJobsGrid({ jobs, categories, initialCategory = "" }: Props) {
   const [category, setCategory] = useState(initialCategory);
 
   const filteredJobs = category
-    ? jobs.filter(
-        (job) =>
-          job.category.toLocaleLowerCase() === category.toLocaleLowerCase()
-      )
+    ? jobs.filter((job) => job.category.toLocaleLowerCase() === category.toLocaleLowerCase())
     : jobs;
 
   return (
     <>
+      <div className="flex items-center justify-center py-4">
+        <Filter value={category} onChange={setCategory} options={categories} />
+      </div>
       <div className="py-5">
-        <h2 className="text-xl font-semibold mb-4 px-4">Vagas Gerais</h2>
-        <div className="flex items-center justify-center py-4">
-          <Filter
-            value={category}
-            onChange={setCategory}
-            options={categories}
-          />
-        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredJobs.map((job) => (
             <JobCard key={job.id} job={job} />

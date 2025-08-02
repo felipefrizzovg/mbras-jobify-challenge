@@ -1,9 +1,9 @@
 "use client";
 
-import { createClient } from "@/utils/supabase/browser";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { Job } from "@/types/job";
 
 type FavoriteButtonProps = {
   jobId: number;
@@ -20,9 +20,9 @@ function getAnonId(): string {
   return anonId;
 }
 
-export default function FavoriteButton({ jobId }: FavoriteButtonProps) {
-  const supabase = createClient();
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
+export default function FavoriteButton({ jobId }: FavoriteButtonProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -34,12 +34,12 @@ export default function FavoriteButton({ jobId }: FavoriteButtonProps) {
       setLoading(true);
       setError(null);
       try {
-        const { data, error } = await supabase.from("favorites").select("id").eq("anon_id", anonId).eq("job_id", jobId).maybeSingle();
-
-        if (error) {
-          throw error;
+        const res = await fetch(`${API_URL}/api/favorites?anon_id=${anonId}`)
+        if (!res.ok) {
+          throw new Error("Erro ao buscar favoritos");
         }
-        setIsFavorite(!!data);
+        const favoriteJobs = await res.json();
+        setIsFavorite(favoriteJobs.some((job: Job) => job.id === jobId));
       } catch (err) {
         setError("Erro ao verificar favorito");
         console.error(err);
@@ -50,7 +50,7 @@ export default function FavoriteButton({ jobId }: FavoriteButtonProps) {
     if (anonId) {
       checkFavorite();
     }
-  }, [anonId, jobId, supabase]);
+  }, [anonId, jobId]);
 
   async function toggleFavorite() {
     if (!anonId) {
@@ -61,16 +61,32 @@ export default function FavoriteButton({ jobId }: FavoriteButtonProps) {
     setError(null);
     try {
       if (isFavorite) {
-        const { error } = await supabase.from("favorites").delete().eq("anon_id", anonId).eq("job_id", jobId);
-        if (error) {
-          throw error;
+        const res = await fetch(`${API_URL}/api/favorites`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ anon_id: anonId, job_id: jobId }),
+        })
+
+        if (!res.ok) {
+          throw new Error("Erro ao remover favorito");
         }
+
         setIsFavorite(false);
       } else {
-        const { error } = await supabase.from("favorites").insert({ anon_id: anonId, job_id: jobId });
-        if (error) {
-          throw error;
+        const res = await fetch(`${API_URL}/api/favorites`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ anon_id: anonId, job_id: jobId }),
+        })
+
+        if (!res.ok) {
+          throw new Error("Erro ao adicionar favorito");
         }
+
         setIsFavorite(true);
       }
     } catch (err) {
